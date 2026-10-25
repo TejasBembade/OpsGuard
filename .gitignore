@@ -1,4 +1,8 @@
 node_modules/
 .DS_Store
 __pycache__/
-.env.git-backup/
+
+.env
+.env.*
+!.env.example
+.git-backup/
