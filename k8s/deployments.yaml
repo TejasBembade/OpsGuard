@@ -1,0 +1,108 @@
+# OpsGuardian - Kubernetes Deployments
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opsguardian-backend
+  namespace: default
+  labels:
+    app: opsguardian-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: opsguardian-backend
+  template:
+    metadata:
+      labels:
+        app: opsguardian-backend
+    spec:
+      containers:
+      - name: backend
+        image: opsguardian-backend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+        env:
+        - name: MONGO_URI
+          valueFrom:
+            secretKeyRef:
+              name: opsguardian-secrets
+              key: mongo-uri
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: opsguardian-secrets
+              key: jwt-secret
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opsguardian-ai-engine
+  namespace: default
+  labels:
+    app: opsguardian-ai-engine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opsguardian-ai-engine
+  template:
+    metadata:
+      labels:
+        app: opsguardian-ai-engine
+    spec:
+      containers:
+      - name: ai-engine
+        image: opsguardian-ai-engine:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8001
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opsguardian-frontend
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opsguardian-frontend
+  template:
+    metadata:
+      labels:
+        app: opsguardian-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: opsguardian-frontend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+
