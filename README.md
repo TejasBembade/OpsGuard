@@ -279,6 +279,3 @@ git push origin feature/your-feature
   <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f2027,50:302b63,100:0f0c29&height=120&section=footer" />
 </p>
 
-<p align="center">
-  <b>⭐ Star this repo if it helped you! Built with ❤️ by <a href="https://github.com/manikantbindass">Manikant Kumar</a></b>
-</p>
